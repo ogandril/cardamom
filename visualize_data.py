@@ -14,7 +14,7 @@ import sys, getopt
 
 plot_distributions = 1 # for plotting the marginal distributions of the simulated genes
 plot_umap = 1 # for plotting the UMAP reduction of the simulated dataset
-plot_pvalues = 0 # for plotting the comparison of the marginals using a Kolmogorov-Smornov test
+plot_comparison = 1 # for plotting the comparison of the marginals using a Kolmogorov-Smornov test
 verb = 1
 
 
@@ -38,7 +38,7 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
     nb_genes = len(names)
     list_genes = np.arange(nb_genes)
     nb_pages = int(nb_genes / nb_by_pages) + 1
-    with PdfPages('./{}/Results/Marginals.pdf'.format(file)) as pdf:
+    with PdfPages('./{}/Results/Marginals_{}.pdf'.format(file, file)) as pdf:
         for i in range(nb_pages):
             fig, ax = plt.subplots(len(t_netw), min(nb_by_pages, nb_genes),
                                    figsize=(min(nb_by_pages, nb_genes) * rat, len(t_netw) * rat))
@@ -64,11 +64,11 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
             plt.close()
 
 def plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile):
-    data_real = data_real[:, :]
-    data_netw = data_netw[:, :]
+    data_real = data_real[:, np.argsort(data_real[0, :])]
+    data_netw = data_netw[:, np.argsort(data_netw[0, :])]
 
     # Compute the UMAP projection
-    reducer = UMAP(random_state=42, min_dist=0.7)
+    reducer = UMAP(random_state=42, min_dist=0.15)
     proj = reducer.fit(data_real[1:,:].T)
     x_real = proj.transform(data_real[1:,:].T)
     x_netw = proj.transform(data_netw[1:,:].T)
@@ -114,7 +114,8 @@ def plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile):
     ax3.axis('off')
 
     # Export the figure
-    fig.savefig('./{}/Results/UMAP.pdf'.format(inputfile), dpi=300, bbox_inches='tight', pad_inches=0.02)
+    fig.savefig('./{}/Results/UMAP_{}.pdf'.format(inputfile, inputfile), dpi=300, bbox_inches='tight', pad_inches=0.02)
+
 
 def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
 
@@ -131,13 +132,13 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
             pval_netw[cnt_t, cnt_g] = stat_tmp[1]
 
     # Figure
-    fig = plt.figure(figsize=(8*G/42,8.1*G/42))
+    fig = plt.figure(figsize=(8,8.1))
     grid = gs.GridSpec(6, 4, wspace=0, hspace=0,
         width_ratios=[0.09,1.48,0.32,1],
         height_ratios=[0.49,0.2,0.031,0.85,0.22,0.516])
     panelA = grid[0,:]
     # Panel settings
-    opt = {'xy': (0,1), 'xycoords': 'axes fraction', 'fontsize': 10,
+    opt = {'xy': (0,1), 'xycoords': 'axes fraction', 'fontsize': 6,
         'textcoords': 'offset points', 'annotation_clip': False}
 
     # Color settings
@@ -146,7 +147,7 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
 
     # A. KS test p-values
     axA = plt.subplot(panelA)
-    axA.annotate('A', xytext=(-14,6), fontweight='bold', **opt)
+    #axA.annotate('A', xytext=(-14,6), fontweight='bold', **opt)
     axA.annotate('KS test p-values', xytext=(0,6), **opt)
     # axA.set_title('KS test p-values', fontsize=10)
     cmap = LinearSegmentedColormap.from_list('pvalue', colors)
@@ -162,14 +163,13 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
     cbar = axA.figure.colorbar(im, cax=cax, extend='max')
     pticks = np.array([0,1,3,5,7,9])
     cbar.set_ticks(pticks/100 + 0.0007)
-    cbar.ax.set_yticklabels([0]+[f'{p}%' for p in pticks[1:]], fontsize=6)
+    cbar.ax.set_yticklabels([0]+[f'{p}%' for p in pticks[1:]], fontsize=3)
     cbar.ax.spines[:].set_visible(False)
     cbar.ax.tick_params(axis='y',direction='out', length=1.5, pad=1.5)
     axA.set_xticks(np.arange(G))
     axA.set_yticks(np.arange(T))
-    axA.set_xticklabels(genes, rotation=45, ha='right', rotation_mode='anchor',
-        fontsize=3)
-    axA.set_yticklabels([f'{int(t)}h' for t in t_real], fontsize=6.5)
+    axA.set_xticklabels(genes, rotation=45, ha='right', rotation_mode='anchor', fontsize=3)
+    axA.set_yticklabels([f'{int(t)}h' for t in t_real], fontsize=4)
     axA.spines[:].set_visible(False)
     axA.set_xticks(np.arange(G+1)-0.5, minor=True)
     axA.set_yticks(np.arange(T+1)-0.5, minor=True)
@@ -180,7 +180,7 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
     axA.tick_params(axis='y',direction='out', pad=-0.1)
 
     # Export the figure
-    fig.savefig('./{}/Results/Comparison.pdf'.format(file), dpi=300, bbox_inches='tight', pad_inches=0.02)
+    fig.savefig('./{}/Results/Comparison_{}.pdf'.format(file, file), dpi=300, bbox_inches='tight', pad_inches=0.02)
 
 def main(argv):
     inputfile = ''
@@ -226,17 +226,17 @@ def main(argv):
     if plot_distributions:
         plot_data_distrib(data_real, data_netw, t_real, t_netw, names, inputfile)
 
-    if plot_pvalues:
+    if plot_comparison:
         compare_marginals(data_real, data_netw, t_real, t_netw, names, inputfile)
 
     if plot_umap:
         # Remove stimulus
         data_real = np.delete(data_real, 1, axis=0)
         data_netw = np.delete(data_netw, 1, axis=0)
-        # Remove Sparc gene (index = 36)
-        if p == "tests/Semrau/":
-            data_real = np.delete(data_real, 36, axis=0)
-            data_netw = np.delete(data_netw, 36, axis=0)
+        # Remove Sparc gene (index = 34)
+        if p == "Semrau":
+            data_real = np.delete(data_real, 34, axis=1)
+            data_netw = np.delete(data_netw, 34, axis=1)
         plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile)
 
 
