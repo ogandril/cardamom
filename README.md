@@ -21,6 +21,9 @@ For each analysis, the user must create a dedicated directory `myproject` contai
 
 An example is `tests/Network4` which corresponds to one of the networks used in [[2](#Ventre2023)].
 
+## To execute CARDAMOM on a distant server
+See https://github.com/ogandril/Launching_Cardamom for redy to use scripts.
+
 ## Before using CARDAMOM
 
 Prior to analyzing an experimental scRNA-seq data with CARDAMOM, we recommend that you perform the following steps:
