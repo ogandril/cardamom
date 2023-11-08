@@ -129,7 +129,7 @@ def main():
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
     # Plot and save the result
     fig=plt.bar(range(k.shape[0]),k) 
-    ti='Kanto.2D.pdf'
+    ti='Kanto.2D_'+str(D)+'_'+str(P)+'.pdf'
     plt.savefig(ti)
 
     with open('kanto_distances', 'w') as f:

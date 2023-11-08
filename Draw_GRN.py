@@ -46,7 +46,7 @@ ax = fig.gca()
 plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
 
 # Export the figure
-ti='GRN.OG'+str(D)+'.Threshold='+str(T)+'.pdf'
+ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'.Threshold='+str(T)+'.pdf'
 os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 fig.savefig(ti, bbox_inches='tight')
 
