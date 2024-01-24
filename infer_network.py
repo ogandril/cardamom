@@ -33,7 +33,10 @@ def main(argv):
     np.save(p+'cardamom/kmax', np.max(model.data_bool, 0))
     np.save(p+'cardamom/data_bool', model.data_bool)
     np.save(p+'cardamom/bet', model.a[-1, :])
+    np.save(p+'cardamom/variations', model.variations)
 
+    for i in range(0, len(model.inter_t)-1):
+        print(np.sum(np.abs(model.inter_t[i+1] - model.inter_t[i]) > .001))
 
 if __name__ == "__main__":
    main(sys.argv[1:])

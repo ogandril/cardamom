@@ -1,7 +1,7 @@
 # Draw the final GRN
 # Remove node with no edges
 # Remove_leaves: remove stimulus leaves (Genes with only an input from stimulus and no output)
-# Time_Line: draw a GRN per time point 
+
 
 import os
 import numpy as np
@@ -9,7 +9,12 @@ import matplotlib.pyplot as plt
 from harissa.utils import build_pos, plot_network
 from sys import argv 
 
-Time_Line=1
+Time_Line=1 
+# Time_Line: draw a GRN per time point 
+
+Remove_leaves = 0
+# Remove_leaves: remove stimulus leaves (Genes with only an input from stimulus and no output)
+
 
 D=argv[1]
 P=argv[2]
@@ -59,6 +64,7 @@ fig.savefig(ti, bbox_inches='tight')
 if Time_Line:
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 	fi_t=np.load('inter_t.npy')
+	# Save each time separately
 	for i in range(fi_t.shape[0]):
 		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 		np.savetxt(str("inter_"+str(i)+"_matrix.csv"), fi_t[i], delimiter=",")
