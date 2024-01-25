@@ -15,7 +15,6 @@ Time_Line=1
 Remove_leaves = 0
 # Remove_leaves: remove stimulus leaves (Genes with only an input from stimulus and no output)
 
-
 D=argv[1]
 P=argv[2]
 T=argv[3]
@@ -66,8 +65,10 @@ if Time_Line:
 	fi_t=np.load('inter_t.npy')
 	# Save each time separately
 	for i in range(fi_t.shape[0]):
-		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 		np.savetxt(str("inter_"+str(i)+"_matrix.csv"), fi_t[i], delimiter=",")
+
+	# open each time separately	
+	for i in range(fi_t.shape[0]):	
 		datamatrixarray = np.loadtxt(str("inter_"+str(i)+"_matrix.csv"), delimiter=',')
 	# Sum rows
 		s1=datamatrixarray.sum(axis=0)
