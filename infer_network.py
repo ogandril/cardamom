@@ -35,9 +35,10 @@ def main(argv):
     np.save(p+'cardamom/bet', model.a[-1, :])
     np.save(p+'cardamom/variations', model.variations)
 
-    for i in range(0, len(model.inter_t)-1):
-        print(np.sum(np.abs(model.inter_t[i+1] - model.inter_t[i]) > .001))
-
+    #for i in range(0, len(model.inter_t)-1):
+    #    print(np.sum(np.abs(model.inter_t[i+1] - model.inter_t[i]) > .001))
+    # print the amount of interactions that differ by more than 0.001 between two time points
+	
 if __name__ == "__main__":
    main(sys.argv[1:])
 
