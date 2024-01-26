@@ -62,7 +62,8 @@ fig.savefig(ti, bbox_inches='tight')
 
 if Time_Line:
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
-	datamatrixarray = np.load('inter_0.npy')
+	for i in range(0, 3):
+	datamatrixarray = np.load('inter_{}'.format(i))
 
 # Get the names of the nodes
 		with open('../Data/Genenames.txt') as f:
@@ -83,7 +84,7 @@ if Time_Line:
 		plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
 
 # Export the figure
-		ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time=0.pdf'
+		ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+i+'pdf'
 		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 		fig.savefig(ti, bbox_inches='tight')
 
