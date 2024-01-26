@@ -21,9 +21,9 @@ T=argv[3]
 cwd=argv[4]
 
 os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
-#os.chdir("/Users/olivier_2/Documents/En_cours/Labo/Manipes/OG3446/OG3446/1/cardamom")
 
-datamatrixarray = np.loadtxt('inter_matrix.csv', delimiter=',')
+# datamatrixarray = np.loadtxt('inter_matrix.csv', delimiter=',')
+datamatrixarray = np.load('inter.npy')
 
 # Sum rows
 s1=datamatrixarray.sum(axis=0)
@@ -62,24 +62,7 @@ fig.savefig(ti, bbox_inches='tight')
 
 if Time_Line:
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
-	fi_t=np.load('inter_t.npy')
-	# Save each time separately
-	for i in range(fi_t.shape[0]):
-		np.savetxt(str("inter_"+str(i)+"_matrix.csv"), fi_t[i], delimiter=",")
-
-	# open each time separately	
-	for i in range(fi_t.shape[0]):	
-		datamatrixarray = np.loadtxt(str("inter_"+str(i)+"_matrix.csv"), delimiter=',')
-	# Sum rows
-		s1=datamatrixarray.sum(axis=0)
-	# Sum columns
-		s2=datamatrixarray.sum(axis=1)
-# Find when both are null
-		z1=np.logical_and(s1==0, s2==0)
-# Get the index where both are not null
-		z2=np.where(z1==0)
-# Select
-		datamatrixarray=datamatrixarray[np.ix_(z2[0],z2[0])]
+	datamatrixarray = np.load('inter_0.npy')
 
 # Get the names of the nodes
 		with open('../Data/Genenames.txt') as f:
@@ -100,7 +83,7 @@ if Time_Line:
 		plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
 
 # Export the figure
-		ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(i)+'.pdf'
+		ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time=0.pdf'
 		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 		fig.savefig(ti, bbox_inches='tight')
 
