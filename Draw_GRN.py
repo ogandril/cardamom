@@ -68,26 +68,26 @@ if Time_Line:
 		datamatrixarray = np.load('inter_{}.npy'.format(i))
 
 # Get the names of the nodes
-			with open('../Data/Genenames.txt') as f:
-				Genenames = f.read().splitlines()
-				g2=np.asarray(Genenames)
-				Genenames=g2[np.ix_(z2[0])]
+		with open('../Data/Genenames.txt') as f:
+			Genenames = f.read().splitlines()
+			g2=np.asarray(Genenames)
+			Genenames=g2[np.ix_(z2[0])]
 
 # Node positions and names
-			pos = build_pos(datamatrixarray)
+		pos = build_pos(datamatrixarray)
 # scale to the number of genes
-			pos *= 5
+		pos *= 5
 
 # Figure
-			fig = plt.figure(figsize=(5,5))
-			ax = fig.gca()
+		fig = plt.figure(figsize=(5,5))
+		ax = fig.gca()
 
 # Draw the network
-			plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
+		plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
 
 # Export the figure
-			ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+i+'pdf'
-			os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
-			fig.savefig(ti, bbox_inches='tight')
+		ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+i+'pdf'
+		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
+		fig.savefig(ti, bbox_inches='tight')
 
 
