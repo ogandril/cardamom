@@ -60,7 +60,8 @@ pgr(datamatrixarray,"all")
 if Time_Line:
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 	dim=np.load('inter_t.npy')
-	for i in range(0, len(dim)):		    
+	for i in range(0, len(dim)):	
+		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")	    
 		datamatrixarray = np.load('inter_{}.npy'.format(i))
 		pgr(datamatrixarray,i)
 
