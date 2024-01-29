@@ -54,7 +54,7 @@ def pgr(datamatrixarray,i):
 
 os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 datamatrixarray = np.load('inter.npy')
-pgr(datamatrixarray,a)
+pgr(datamatrixarray,"a")
 
 
 
