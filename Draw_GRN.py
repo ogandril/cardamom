@@ -45,15 +45,15 @@ def pgr(datamatrixarray):
 	ax = fig.gca()
 # Draw the network
 	plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
+# Export the figure
+	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
+	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'.Threshold='+str(T)+'.pdf'
+	fig.savefig(ti, bbox_inches='tight')
 
 
 os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 datamatrixarray = np.load('inter.npy')
 pgr(datamatrixarray)
-# Export the figure
-ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'.Threshold='+str(T)+'.pdf'
-os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
-fig.savefig(ti, bbox_inches='tight')
 
 
 
