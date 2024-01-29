@@ -20,7 +20,7 @@ P=argv[2]
 T=argv[3]
 cwd=argv[4]
 
-def pgr(datamatrixarray):
+def pgr(datamatrixarray,i):
 # Sum rows
 	s1=datamatrixarray.sum(axis=0)
 # Sum columns
@@ -47,13 +47,14 @@ def pgr(datamatrixarray):
 	plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
 # Export the figure
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
-	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'.Threshold='+str(T)+'.pdf'
+	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(i)+'pdf'
+	#ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'.Threshold='+str(T)+'.pdf'
 	fig.savefig(ti, bbox_inches='tight')
 
 
 os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 datamatrixarray = np.load('inter.npy')
-pgr(datamatrixarray)
+pgr(datamatrixarray,a)
 
 
 
@@ -63,6 +64,8 @@ if Time_Line:
 	for i in range(0, 3):
 	#for i in range(0, len(dim)):		    
 		datamatrixarray = np.load('inter_{}.npy'.format(i))
+		pgr(datamatrixarray)
+
 
 # Get the names of the nodes
 		with open('../Data/Genenames.txt') as f:
