@@ -47,7 +47,7 @@ def pgr(datamatrixarray,i):
 	plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
 # Export the figure
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
-	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(i)+'pdf'
+	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(i)+'.pdf'
 	#ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'.Threshold='+str(T)+'.pdf'
 	fig.savefig(ti, bbox_inches='tight')
 
