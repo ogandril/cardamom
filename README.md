@@ -40,6 +40,8 @@ The selection step can be performed using any combination of the following: (1) 
 
 This selected list of genes will have to be incremented by adding on the first line a “gene” called “Stimulus”. It should take a zero value for the 0h time point and 1 for all the others (see below). The list of gene names should be saved as `myproject/Data/panel_genes.txt`.
 
+An example of the structure expected from that count table can be found in the input-tables.pdf file.
+
 ### 2. Degradation rates of mRNAs and proteins
 
 You can find half-lives for mRNAs and proteins in human in two papers: [Blumberg et al. (2021) ](https://doi.org/10.1186/s12915-021-00949-x) and [Li et al. (2021)](https://doi.org/10.1016/j.molcel.2021.09.015). Only “short-lived” protein half-lives are estimated in the Li paper. In any case, the “maximum” half-life of proteins will be set by the cell cycle duration. So make sure that no protein has a larger half-life that the cell cycle duration. A compiled table can be found [here](https://osf.io/4hqt9/?view_only=23288f5b09274a858cc32009c5a0fe78).
@@ -49,6 +51,8 @@ You will then have to generate the degradation rates from the half-lives using t
 ### 3. Generate the count table
 
 CARDAMOM will need a count table in .txt format with cells as columns and genes as rows. The first row must correspond to the time points at which the cells are sampled, and the first column to the index of each gene. Then, each line represents the mRNA counts associated to a gene for each cell at each timepoint. Note that the second line corresponds to the stimulus, which is set to 0 at t = 0h and to 1 at t > 0h (see [[1](#Ventre2021)] section 5.1 for details). CARDAMOM will be expecting integer values (mRNA counts).
+
+An example of the structure expected from that count table can be found in the input-tables.pdf file.
 
 
 ## Tutorial
