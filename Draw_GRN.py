@@ -12,8 +12,9 @@ from sys import argv
 Time_Line=1
 # Time_Line: draw a GRN per time point 
 
-Remove_leaves = 0
-# Remove_leaves: remove stimulus leaves (Genes with only an input from stimulus and no output)
+Remove_unconnected_leaves = 0
+# Remove genes with no interaction whatsoever
+
 
 D=argv[1]
 P=argv[2]
@@ -21,16 +22,19 @@ T=argv[3]
 cwd=argv[4]
 
 def pgr(datamatrixarray,i):
+
+if Remove_unconnected_leaves:
 # Sum rows
-	s1=datamatrixarray.sum(axis=0)
+		s1=datamatrixarray.sum(axis=0)
 # Sum columns
-	s2=datamatrixarray.sum(axis=1)
+		s2=datamatrixarray.sum(axis=1)
 # Find when both are null
-	z1=np.logical_and(s1==0, s2==0)
+		z1=np.logical_and(s1==0, s2==0)
 # Get the index where both are not null
-	z2=np.where(z1==0)
+		z2=np.where(z1==0)
 # Select
-	datamatrixarray=datamatrixarray[np.ix_(z2[0],z2[0])]
+		datamatrixarray=datamatrixarray[np.ix_(z2[0],z2[0])]
+		
 # Get the names of the nodes
 	with open('../Data/Genenames.txt') as f:
 		Genenames = f.read().splitlines()
