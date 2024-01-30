@@ -49,6 +49,7 @@ You will then have to generate the degradation rates from the half-lives using t
 ### 3. Generate the count table
 
 CARDAMOM will need a count table in .txt format with cells as columns and genes as rows. The first row must correspond to the time points at which the cells are sampled, and the first column to the index of each gene. Then, each line represents the mRNA counts associated to a gene for each cell at each timepoint. Note that the second line corresponds to the stimulus, which is set to 0 at t = 0h and to 1 at t > 0h (see [[1](#Ventre2021)] section 5.1 for details). CARDAMOM will be expecting integer values (mRNA counts).
+An example of the strcuture expected from that count table can be found in the input-tables.odf file.
 
 
 ## Tutorial
