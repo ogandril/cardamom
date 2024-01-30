@@ -45,8 +45,8 @@ def pgr(datamatrixarray,i):
 
 	else: 
 		with open('../Data/Genenames.txt') as f:
-		Genenames = f.read().splitlines()
-		Genenames=np.asarray(Genenames)
+			Genenames = f.read().splitlines()
+			Genenames=np.asarray(Genenames)
 
 # Node positions and names
 	pos = build_pos(datamatrixarray)
