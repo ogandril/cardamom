@@ -6,7 +6,6 @@ from alive_progress import alive_bar
 
 # multiplicative coefficient
 r = 2.5 # technical parameter to transfer the basal regulation in the diagonal of the interaction matrix
-fi = 7 # multiplicative coefficient of the interaction matrix
 
 def build_data(data_real, data_bool, time, my_k, model, basal, inter):
 
@@ -79,8 +78,8 @@ def main(argv):
     model.a[1, :] = np.load(p + 'cardamom/kmax.npy')
     model.a[2, :] = np.load(p + 'cardamom/bet.npy')
     data_bool = np.load(p + 'cardamom/data_bool.npy')
-    basal = fi * np.load(p + 'cardamom/basal.npy')
-    inter = fi * np.load(p + 'cardamom/inter.npy')
+    basal = np.load(p + 'cardamom/basal.npy')
+    inter = np.load(p + 'cardamom/inter.npy')
 
     model.d = np.loadtxt(p + 'Rates/degradation_rates.txt', dtype=float, delimiter='\t').T
 

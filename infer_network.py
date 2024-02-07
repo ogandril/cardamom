@@ -37,7 +37,6 @@ def main(argv):
     for i in range(0, len(model.inter_t)):
         np.save(p+'cardamom/inter_{}'.format(i), model.inter * (model.variations == i - 1))
     
-
 if __name__ == "__main__":
    main(sys.argv[1:])
 

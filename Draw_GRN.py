@@ -12,8 +12,7 @@ Time_Line=1
 # And thresholded by carda.py
 
 Remove_edgless_nodes=1
-# Remove node with no edges	
-
+# Remove nodes with no edges	
 
 D=argv[1]
 P=argv[2]
@@ -21,10 +20,7 @@ T=argv[3]
 cwd=argv[4]
 
 def pgr(datamatrixarray,i):
-
 	if Remove_edgless_nodes:
-
-# Remove node with no edges	
 # Sum rows
 		s1=datamatrixarray.sum(axis=0)
 # Sum columns
@@ -41,7 +37,6 @@ def pgr(datamatrixarray,i):
 			Genenames = f.read().splitlines()
 			g2=np.asarray(Genenames)
 			Genenames=g2[np.ix_(z2[0])]
-
 
 	else: 
 		with open('../Data/Genenames.txt') as f:
