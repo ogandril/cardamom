@@ -59,13 +59,6 @@ def main(argv):
 
     p = '{}/'.format(inputfile)  # Name of the file where are the data
 
-    # factor which ensures the convergence to the stationary state.
-    # It takes into account the change in the degradation rates after 72h for the Semrau data
-
-    factor_last = 2
-    if p == "tests/Semrau/":
-        factor_last = 6
-
     # Real data
     data_real = np.loadtxt(p+'Data/panel_real.txt', dtype=float, delimiter='\t')[1:, 1:].T
     data_real[:, 0] = np.loadtxt(p+'Data/panel_real.txt', dtype=float, delimiter='\t')[0, 1:]
