@@ -80,7 +80,7 @@ def main(argv):
     t_real = list(set(data_real[:, 0]))
     t_real.sort()
     t = np.array(t_real, dtype=int)
-    t[-1] *= factor_last
+    #t[-1] *= factor_last
     my_k = [np.sum(data_real[:, 0] == times) for times in t_real]
     C = int(np.sum(my_k))
     k = [int(np.sum(my_k[:i])) for i in range(0, len(t_real))] + [C]
