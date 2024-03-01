@@ -131,7 +131,7 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
             stat_tmp = ks(data_tmp_real[cnt_g, :], data_tmp_netw[cnt_g, :])
             pval_netw[cnt_t, cnt_g] = stat_tmp[1]
             #Correction for multiple testing
-            pval_netw = pval_netw*(G*T)
+        pval_netw = pval_netw*(G*T)
 
     # Figure
     fig = plt.figure(figsize=(8,8.1))
