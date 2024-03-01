@@ -116,10 +116,7 @@ def plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile):
     # Export the figure
     fig.savefig('./{}/Results/UMAP_{}.pdf'.format(inputfile, inputfile), dpi=300, bbox_inches='tight', pad_inches=0.02)
 
-
 def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
-
-
     T = len(t_real)
     G = len(genes)
 
@@ -130,8 +127,9 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
         for cnt_g in range(0,G):
             stat_tmp = ks(data_tmp_real[cnt_g, :], data_tmp_netw[cnt_g, :])
             pval_netw[cnt_t, cnt_g] = stat_tmp[1]
-            #Correction for multiple testing
-        pval_netw = pval_netw*(G*T)
+    
+    #Correction for multiple testing
+    pval_netw = pval_netw*(G*T)
 
     # Figure
     fig = plt.figure(figsize=(8,8.1))

@@ -24,7 +24,7 @@ def pgr(datamatrixarray,i):
 # Node positions and names
 	pos = build_pos(datamatrixarray)
 # scale to the number of genes
-	pos *= 5
+	pos *= 8
 # Figure
 	fig = plt.figure(figsize=(5,5))
 	ax = fig.gca()
