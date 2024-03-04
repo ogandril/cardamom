@@ -230,13 +230,10 @@ def main(argv):
         compare_marginals(data_real, data_netw, t_real, t_netw, names, inputfile)
 
     if plot_umap:
-        # Remove stimulus
-        data_real = np.delete(data_real, 1, axis=0)
-        data_netw = np.delete(data_netw, 1, axis=0)
-        # Remove Sparc gene (index = 34)
+        # Remove Sparc gene (index = 35)
         if p == "Semrau":
-            data_real = np.delete(data_real, 34, axis=1)
-            data_netw = np.delete(data_netw, 34, axis=1)
+            data_real = np.delete(data_real, 35, axis=1)
+            data_netw = np.delete(data_netw, 35, axis=1)
         plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile)
 
 
