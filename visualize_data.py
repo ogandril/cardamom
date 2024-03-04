@@ -35,8 +35,8 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
         return None
     rat = 5
     nb_by_pages = 10
-    nb_genes = len(names)
-    list_genes = np.arange(nb_genes)
+    nb_genes = len(names)-1
+    list_genes = np.arange(nb_genes)+1
     nb_pages = int(nb_genes / nb_by_pages) + 1
     with PdfPages('./{}/Results/Marginals_{}.pdf'.format(file, file)) as pdf:
         for i in range(nb_pages):
@@ -118,14 +118,14 @@ def plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile):
 
 def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
     T = len(t_real)
-    G = len(genes)
+    G = len(genes)-1
 
     pval_netw = np.ones((T, G))
     for cnt_t in range(T):
         data_tmp_real = data_real[:,data_real[0,:] == t_real[cnt_t]]
         data_tmp_netw = data_netw[:,data_netw[0,:] == t_netw[cnt_t]]
         for cnt_g in range(0,G):
-            stat_tmp = ks(data_tmp_real[cnt_g, :], data_tmp_netw[cnt_g, :])
+            stat_tmp = ks(data_tmp_real[cnt_g+1, :], data_tmp_netw[cnt_g+1, :])
             pval_netw[cnt_t, cnt_g] = stat_tmp[1]
     
     #Correction for multiple testing
@@ -168,7 +168,7 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
     cbar.ax.tick_params(axis='y',direction='out', length=1.5, pad=1.5)
     axA.set_xticks(np.arange(G))
     axA.set_yticks(np.arange(T))
-    axA.set_xticklabels(genes, rotation=45, ha='right', rotation_mode='anchor', fontsize=3)
+    axA.set_xticklabels(genes[1:], rotation=45, ha='right', rotation_mode='anchor', fontsize=3)
     axA.set_yticklabels([f'{int(t)}h' for t in t_real], fontsize=4)
     axA.spines[:].set_visible(False)
     axA.set_xticks(np.arange(G+1)-0.5, minor=True)
