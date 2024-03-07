@@ -43,6 +43,7 @@ pgr(datamatrixarray,"all", pos)
 
 # Draw time-dependent GRNs
 if Time_Line:
+	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 	dim=np.load('inter_t.npy')
 	for i in range(0, len(dim)):	   
 		dmt = np.load('inter_{}.npy'.format(i))
