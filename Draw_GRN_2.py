@@ -25,6 +25,7 @@ def pgr(datamatrixarray,i,pos):
 	ax = fig.gca()
 # Draw the network
 	plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2)
+	#plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2, hide_isolated_genes=True, hide_stimulus_leaves=True)
 # Export the figure
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(i)+'.pdf'
