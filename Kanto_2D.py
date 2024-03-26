@@ -146,7 +146,7 @@ def main():
 
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
     # Plot and save the result
-     fig=plt.bar(range(k1.shape[0]),k1) 
+    fig=plt.bar(range(k1.shape[0]),k1) 
     ti='Kanto.1D.jpeg'
     plt.savefig(ti,format="jpeg")
 
@@ -158,7 +158,7 @@ def main():
         for line in k2:
            f.write(str(line))
            f.write('\n')
-           
+
 
 if __name__ == "__main__":
     main()
