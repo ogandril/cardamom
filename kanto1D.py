@@ -12,7 +12,6 @@ from scipy.stats import wasserstein_distance
 
 
 
-
 # ====================================================
 
 # code
@@ -26,7 +25,6 @@ def kanto_1d(sample1: np.ndarray,
     """
 
     Computes the sum of a series of kantorovich distances on cpu.
-
 
 
     Args:

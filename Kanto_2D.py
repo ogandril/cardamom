@@ -1,17 +1,18 @@
 # Compute Kanto 2D distances between experimental and CARDAMOM-simulated distributions
 
 import multiprocessing as mp
+import time
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
 from tqdm.auto import tqdm
 from math import factorial
 from ot import dist, sinkhorn2
 from dataclasses import dataclass
 from itertools import combinations, repeat
 from scipy.stats import wasserstein_distance
-import time
 from sys import argv 
-import os
-import numpy as np
-import matplotlib.pyplot as plt
 
 # ====================================================
 # code
@@ -79,6 +80,22 @@ def kanto_2d(sample1: np.ndarray,
         return result
     return reduce(result)
 # ====================================================   
+ 
+# code
+def kanto_1d(sample1: np.ndarray,
+             sample2: np.ndarray,
+             #reduce=sum) -> float:
+             reduce=np.mean) -> float:
+             #reduce=None) -> float:
+    assert sample1.ndim == 2 and sample2.ndim == 2, "expects 2D arrays"
+    assert sample1.shape[1] == sample2.shape[1], "nb of distributions should be the same"
+    nb_genes = sample1.shape[1]
+    result = [wasserstein_distance(sample1[:, i], sample2[:, i]) for i in range(nb_genes)]
+    if reduce is None:
+        return result
+    return reduce(result)
+
+# ====================================================
 
 def main():
 
@@ -112,7 +129,8 @@ def main():
     t_netw = list(set(data_netw[0, :]))
     t_netw.sort()
 
-    k=np.array([])
+    k1=np.array([])
+    k2=np.array([])
 
     for i in range (0 , np.shape(t_real)[0]):
         z1r=np.where(data_real[0]==t_real[i])
@@ -123,19 +141,24 @@ def main():
         d1n=d1n[:,0,:]
         d1r=np.transpose(d1r)
         d1n=np.transpose(d1n)
-        k=np.append(k, round(kanto_2d(d1r,d1n),3))
-    #print(k)
+        k2=np.append(k2,np.round(kanto_2d(d1r,d1n)))
+        k1=np.append(k1,kanto_1d(d1r,d1n))
 
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
     # Plot and save the result
-    fig=plt.bar(range(k.shape[0]),k) 
-    ti='Kanto.2D_'+str(D)+'_'+str(P)+'.pdf'
-    plt.savefig(ti)
+     fig=plt.bar(range(k1.shape[0]),k1) 
+    ti='Kanto.1D.jpeg'
+    plt.savefig(ti,format="jpeg")
+
+    fig=plt.bar(range(k2.shape[0]),k2) 
+    ti='Kanto.2D.jpeg'
+    plt.savefig(ti, format="jpeg")
 
     with open('kanto_distances', 'w') as f:
-        for line in k:
+        for line in k2:
            f.write(str(line))
            f.write('\n')
+           
 
 if __name__ == "__main__":
     main()
