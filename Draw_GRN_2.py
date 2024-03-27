@@ -29,6 +29,7 @@ def pgr(datamatrixarray,i,pos):
 # Export the figure
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 	ti='GRN.OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(i)+'.pdf'
+	ax.text(-2, 9, ti,fontsize=30)
 	fig.savefig(ti, bbox_inches='tight')
 
 # Define pos
