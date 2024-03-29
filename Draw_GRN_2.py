@@ -29,7 +29,7 @@ def pgr(datamatrixarray,i,pos):
 # Export the figure
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 
-	if i == "all"
+	if i == "all":
 		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_ALl_Times.pdf'
 	else:
 		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+t_real[i]+'.pdf'
