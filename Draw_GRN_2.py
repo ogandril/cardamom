@@ -28,7 +28,12 @@ def pgr(datamatrixarray,i,pos):
 	#plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2, hide_isolated_genes=True, hide_stimulus_leaves=True)
 # Export the figure
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
-	ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+t_real[i]+'.pdf'
+
+	if i == "all"
+		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_ALl_Times.pdf'
+	else:
+		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+t_real[i]+'.pdf'
+
 	ax.text(-2, 9, ti,fontsize=30)
 	fig.savefig(ti, bbox_inches='tight')
 
