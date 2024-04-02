@@ -28,15 +28,14 @@ def pgr(datamatrixarray,i,pos):
 	#plot_network(datamatrixarray, pos, axes=ax, names=Genenames, scale=2, hide_isolated_genes=True, hide_stimulus_leaves=True)
 # Export the figure
 	if i == "all":
-		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_ALl_Times.pdf'
+		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_All_Times.pdf'
 	else:
 		os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Data")
-		data_real = np.loadtxt(p+'Data/panel_real.txt', dtype=float, delimiter='\t')[1:, 1:].T
+		data_real = np.loadtxt('panel_real.txt', dtype=float, delimiter='\t')[1:, 1:]
 		data_real[0, :] = np.loadtxt('panel_real.txt', dtype=float, delimiter='\t')[0, 1:]
 		t_real = list(set(data_real[0, :])) 
 		t_real.sort()
-		print(t_real[i])
-		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+t_real[i]+'.pdf'
+		ti='OG'+str(D)+'_'+str(P)+'_'+'Threshold='+str(T)+'_Time='+str(t_real[i])+'.pdf'
 	
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
 	ax.text(-2, 9, ti,fontsize=30)
@@ -55,12 +54,6 @@ pgr(datamatrixarray,"all", pos)
 
 # Draw time-dependent GRNs
 if Time_Line:
-	# Obtain the value for the times
-	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Data")
-	data_real = np.loadtxt(p+'Data/panel_real.txt', dtype=float, delimiter='\t')[1:, 1:].T
-	data_real[0, :] = np.loadtxt('panel_real.txt', dtype=float, delimiter='\t')[0, 1:]
-	t_real = list(set(data_real[0, :])) 
-	t_real.sort()
 	os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/cardamom")
 	dim=np.load('inter_t.npy')
 	for i in range(0, len(dim)):	

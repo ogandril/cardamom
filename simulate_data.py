@@ -4,7 +4,7 @@ from harissa import NetworkModel
 import getopt
 from alive_progress import alive_bar
 
-Transfert = 0 #transfer the basal regulation in the diagonal of the interaction matrix, or not.
+Transfert = 1 #transfer the basal regulation in the diagonal of the interaction matrix, or not.
 
 def build_data(data_real, data_bool, time, my_k, model, basal, inter):
 
@@ -16,7 +16,7 @@ def build_data(data_real, data_bool, time, my_k, model, basal, inter):
 
     # Build the interaction matrix. For technical reasons, we transfer the basal regulation in the diagonal of the matrix
     if Transfert:
-        r = 2.5 # transfer intensity
+        r = 25 # transfer intensity
         model.inter[:, :] = inter[:, :] + (1 - r/G) * np.diag(basal)
         model.inter[1:, 1:] /= (1 - .6 * r/G)
         model.inter -= np.diag(np.diag(model.inter)) * .6 * r/G
