@@ -3,8 +3,9 @@ import numpy as np
 from harissa import NetworkModel
 import getopt
 from alive_progress import alive_bar
+from sys import argv 
 
-Transfert = 1 #transfer the basal regulation in the diagonal of the interaction matrix, or not.
+
 
 def build_data(data_real, data_bool, time, my_k, model, basal, inter):
 
@@ -15,8 +16,8 @@ def build_data(data_real, data_bool, time, my_k, model, basal, inter):
     my_data[1:, 1] = 1 * (time > 0)  # Stimulus
 
     # Build the interaction matrix. For technical reasons, we transfer the basal regulation in the diagonal of the matrix
-    if Transfert:
-        r = 25 # transfer intensity
+    if transfert:  #transfer the basal regulation in the diagonal of the interaction matrix, or not.
+        r = 2.5 # transfer intensity
         model.inter[:, :] = inter[:, :] + (1 - r/G) * np.diag(basal)
         model.inter[1:, 1:] /= (1 - .6 * r/G)
         model.inter -= np.diag(np.diag(model.inter)) * .6 * r/G
@@ -55,13 +56,22 @@ def build_data(data_real, data_bool, time, my_k, model, basal, inter):
 
 def main(argv):
     inputfile = ''
+    transfert = '' 
     try:
-        opts, args = getopt.getopt(argv, "hi:", ["ifile="])
+        opts, args = getopt.getopt(argv,"hi:t:",["ifile=","tfile="])
+        #opts, args = getopt.getopt(argv, "hi:", ["ifile="])
     except getopt.GetoptError:
         sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-i", "--ifile"):
-            inputfile = arg
+
+    #for opt, arg in opts:
+    #    if opt in ("-i", "--ifile"):
+    #        inputfile = arg
+
+    for opt, arg in 
+        if opt in ("-i", "--ifile"): 
+            inputfile = arg 
+        elif opt in ("-t", "--tfile"): 
+            transfert = float(arg)
 
     p = '{}/'.format(inputfile)  # Name of the file where are the data
 
