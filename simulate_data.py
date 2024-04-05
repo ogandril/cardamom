@@ -7,7 +7,7 @@ from sys import argv
 
 
 
-def build_data(data_real, data_bool, time, my_k, model, basal, inter):
+def build_data(data_real, data_bool, time, my_k, model, basal, inter, transfert, rval):
 
     C, G = data_real.shape
     my_data = np.zeros((C + 1, G + 1), dtype='uint16')
@@ -16,8 +16,9 @@ def build_data(data_real, data_bool, time, my_k, model, basal, inter):
     my_data[1:, 1] = 1 * (time > 0)  # Stimulus
 
     # Build the interaction matrix. For technical reasons, we transfer the basal regulation in the diagonal of the matrix
-    if transfert:  #transfer the basal regulation in the diagonal of the interaction matrix, or not.
-        r = 2.5 # transfer intensity
+    if transfert==1:  #transfer the basal regulation in the diagonal of the interaction matrix, or not.
+        #r = 2.5 # transfer intensity
+        r = rval
         model.inter[:, :] = inter[:, :] + (1 - r/G) * np.diag(basal)
         model.inter[1:, 1:] /= (1 - .6 * r/G)
         model.inter -= np.diag(np.diag(model.inter)) * .6 * r/G
@@ -56,9 +57,10 @@ def build_data(data_real, data_bool, time, my_k, model, basal, inter):
 
 def main(argv):
     inputfile = ''
-    transfert = '' 
+    transfert = ''
+    rval = ''	 
     try:
-        opts, args = getopt.getopt(argv,"hi:t:",["ifile=","tfile="])
+        opts, args = getopt.getopt(argv,"hi:t:r:",["ifile=","tfile=","rfile="])
         #opts, args = getopt.getopt(argv, "hi:", ["ifile="])
     except getopt.GetoptError:
         sys.exit(2)
@@ -67,11 +69,13 @@ def main(argv):
     #    if opt in ("-i", "--ifile"):
     #        inputfile = arg
 
-    for opt, arg in 
+    for opt, arg in opts:
         if opt in ("-i", "--ifile"): 
             inputfile = arg 
         elif opt in ("-t", "--tfile"): 
             transfert = float(arg)
+        elif opt in ("-r", "--rfile"):
+            rval = float(arg)
 
     p = '{}/'.format(inputfile)  # Name of the file where are the data
 
@@ -104,7 +108,7 @@ def main(argv):
     for i in range(0, len(t)): time[k[i]:k[i + 1]] = t[i]
 
     ### Build the datasets
-    data = build_data(data_real, data_bool, time, my_k, model, basal, inter)
+    data = build_data(data_real, data_bool, time, my_k, model, basal, inter, transfert, rval)
     fname = p + 'Data/panel_simulated.txt'
     np.savetxt(fname, data.T, fmt='%d', delimiter='\t')
 
