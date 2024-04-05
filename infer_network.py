@@ -36,7 +36,7 @@ def main(argv):
     np.save(p+'cardamom/bet', model.a[-1, :])
     np.save(p+'cardamom/variations', model.variations)
     for i in range(0, len(model.inter_t)):
-        #np.save(p+'cardamom/inter_{}'.format(i), model.inter * (model.variations == i - 1))
+        np.save(p+'cardamom/inter_{}'.format(i), model.inter * (model.variations == i - 1))
         np.savetxt(p+'cardamom/inter_{}.csv'.format(i), model.inter * (model.variations == i - 1), delimiter=",")
 
 if __name__ == "__main__":
