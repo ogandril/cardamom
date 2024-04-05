@@ -26,7 +26,8 @@ def main(argv):
     model.fit(data, verb=verb)
 
     np.save(p+'cardamom/basal', model.basal)
-    np.save(p + 'cardamom/inter', model.inter)
+    np.save(p+'cardamom/inter', model.inter)
+    np.savetxt(p+'cardamom/inter.csv', model.inter, delimiter=",")
     np.save(p+'cardamom/basal_t', model.basal_t)
     np.save(p+'cardamom/inter_t', model.inter_t)
     np.save(p+'cardamom/kmin', np.min(model.data_bool, 0))
@@ -35,8 +36,9 @@ def main(argv):
     np.save(p+'cardamom/bet', model.a[-1, :])
     np.save(p+'cardamom/variations', model.variations)
     for i in range(0, len(model.inter_t)):
-        np.save(p+'cardamom/inter_{}'.format(i), model.inter * (model.variations == i - 1))
-    
+        #np.save(p+'cardamom/inter_{}'.format(i), model.inter * (model.variations == i - 1))
+        np.savetxt(p+'cardamom/inter_{}.csv'.format(i), model.inter * (model.variations == i - 1), delimiter=",")
+
 if __name__ == "__main__":
    main(sys.argv[1:])
 
