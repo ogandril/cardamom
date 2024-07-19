@@ -3,6 +3,8 @@ import numpy.typing as npt
 import pandas as pd
 import plotly.express as px
 import vdata as vd
+from sys import argv 
+
 
 from typing import Callable, TypeVar
 
