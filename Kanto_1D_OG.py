@@ -47,7 +47,7 @@ def multigene_kanto_1d(
     v: npt.NDArray[np.float32],
     reduce: Callable[[npt.NDArray[np.float32]], _R] = np.sum,
     p: int = 1,
-    normalization_max: float | None = None,
+    normalization_max= 1,
 ) -> _R:
     """Computes 1D Kantorovich distances over each column of 2D distributions.
 
