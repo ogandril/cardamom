@@ -126,7 +126,7 @@ def main():
 
 
     # Plot distances per gene -----------------------------------------------------
-     df = pd.DataFrame(distances_1D, columns=gene_names[1:])
+    df = pd.DataFrame(distances_1D, columns=gene_names[1:])
 
     # sort columns (gene names) alphabetically
     df = df.reindex(sorted(df.columns), axis=1)
