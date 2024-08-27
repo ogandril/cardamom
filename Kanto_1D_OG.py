@@ -3,6 +3,7 @@ import numpy.typing as npt
 import pandas as pd
 import plotly.express as px
 import vdata as vd
+import os
 from sys import argv 
 
 
@@ -125,14 +126,25 @@ def main():
 
 
     # Plot distances per gene -----------------------------------------------------
-    df = pd.DataFrame(distances_1D, columns=gene_names[1:])
+     df = pd.DataFrame(distances_1D, columns=gene_names[1:])
 
     # sort columns (gene names) alphabetically
     df = df.reindex(sorted(df.columns), axis=1)
-    fig = px.imshow(df,color_continuous_scale=[(0.0, "lightgreen"),  (0.25, "lightgreen"), 
-        (0.25, "sandybrown"), (0.6, "sandybrown"),
-        (0.6, "red"),  (1.0, "red")])
-    fig.show()
+
+    max_dist = df.max(axis=None)
+    good_fit_dist = 1 / max_dist  # borne couleur à KD = 1
+    bad_fit_dist = (max_dist - 1) / (2 * max_dist)  # borne couleur à la moitié de l'intervalle [1, max KD]
+
+    cmap = [
+        (0.0, "lightgreen"),
+        (good_fit_dist, "lightgreen"),
+        (good_fit_dist, "sandybrown"),
+        (bad_fit_dist, "sandybrown"),
+        (bad_fit_dist, "red"),
+        (1.0, "red"),
+    ]
+
+    fig = px.imshow(df, color_continuous_scale=cmap)
 
     fig.write_image("Gene_distances_1d.png", width=len(gene_names)*16, height=400)
 
