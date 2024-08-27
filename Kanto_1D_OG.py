@@ -132,17 +132,20 @@ def main():
     df = df.reindex(sorted(df.columns), axis=1)
 
     max_dist = df.max(axis=None)
-    good_fit_dist = 1 / max_dist  # borne couleur à KD = 1
-    bad_fit_dist = (max_dist - 1) / (2 * max_dist)  # borne couleur à la moitié de l'intervalle [1, max KD]
+    if max_dist <= 1:
+        cmap = [(0.0, "lightgreen"), (1.0, "lightgreen")]
+    else:
+        good_fit_dist = 1 / max_dist  # borne couleur à KD = 1
+        bad_fit_dist = (max_dist - 1) / (2 * max_dist)  # borne couleur à la moitié de l'intervalle [1, max KD]
+        cmap = [
+            (0.0, "lightgreen"),
+            (good_fit_dist, "lightgreen"),
+            (good_fit_dist, "sandybrown"),
+            (bad_fit_dist, "sandybrown"),
+            (bad_fit_dist, "red"),
+            (1.0, "red"),
+        ]
 
-    cmap = [
-        (0.0, "lightgreen"),
-        (good_fit_dist, "lightgreen"),
-        (good_fit_dist, "sandybrown"),
-        (bad_fit_dist, "sandybrown"),
-        (bad_fit_dist, "red"),
-        (1.0, "red"),
-    ]
 
     fig = px.imshow(df, color_continuous_scale=cmap)
 
