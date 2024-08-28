@@ -83,7 +83,7 @@ def main():
     D=argv[1]
     P=argv[2]
     cwd=argv[3]
-    percent_valid=argv[4]
+    percent_valid=float(argv[4])
 
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Data")
 
