@@ -101,17 +101,16 @@ def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_v
     nb_genes = np.size(data_simulated, 0)
     nb_time = len(t_reference)
     df = np.zeros((nb_time, nb_genes))
-    for t in range(0, nb_time):
-        df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
-                                                 data_simulated[:, data_simulated[0, :] == t_simulated[t]])
-    max_dist = df.max(axis=None)
+    for g in range(0, nb_genes):
+        for t in range(0, nb_time):
+            df[t, g] = kanto_1d(data_reference[g, data_reference[0, :] == t_reference[t]],
+                                                     data_simulated[g, data_simulated[0, :] == t_simulated[t]])
+    max_dist = np.max(df[1:, 1:])
     print(max_dist)
     max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
     good_fit_dist = max_valid_distance / max_dist  # borne couleur à KD = max_valid_distance
     bad_fit_dist = (max_valid_distance + (max_dist - max_valid_distance) / 2) / max_dist
     # borne couleur à la moitié de l'intervalle [max_valid_distance, max KD]
-
-    print(good_fit_dist, bad_fit_dist)
 
     color_qc = [['red' for _ in range(nb_genes)] for _ in range(nb_time)]
     for g in range(0, nb_genes):
