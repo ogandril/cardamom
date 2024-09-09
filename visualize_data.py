@@ -101,9 +101,8 @@ def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_v
     nb_genes = np.size(data_simulated, 0)
     nb_time = len(t_reference)
     df = np.zeros((nb_time, nb_genes))
-    for g in range(0, nb_genes):
-        for t in range(0, nb_time):
-            df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
+    for t in range(0, nb_time):
+        df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
                                                  data_simulated[:, data_simulated[0, :] == t_simulated[t]])
 
     max_dist = df.max(axis=None)
