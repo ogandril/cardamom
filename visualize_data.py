@@ -104,7 +104,6 @@ def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_v
     for t in range(0, nb_time):
         df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
                                                  data_simulated[:, data_simulated[0, :] == t_simulated[t]])
-
     max_dist = df.max(axis=None)
     print(max_dist)
     max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
@@ -114,14 +113,11 @@ def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_v
 
     print(good_fit_dist, bad_fit_dist)
 
-    color_qc = ['red' for _ in range(0, int(nb_time * nb_genes))]
+    color_qc = [['red' for _ in range(nb_genes)] for _ in range(nb_time)]
     for g in range(0, nb_genes):
         for t in range(0, nb_time):
-            cnt = int(t * nb_genes + g)
-            if df[t, g] < good_fit_dist: color_qc[cnt] = 'lightgreen'
-            elif df[t, g] < bad_fit_dist: color_qc[cnt] = 'sandybrown'
-
-            print(df[t, g], color_qc[cnt])
+            if df[t, g] < good_fit_dist*max_dist: color_qc[t][g] = 'lightgreen'
+            elif df[t, g] < bad_fit_dist*max_dist: color_qc[t][g] = 'sandybrown'
 
     return color_qc
 
@@ -155,7 +151,7 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
                     if time == t_netw[-1]: ax[-1, cnt_g].set_xlabel('mRNA (copies per cell)', fontsize=20)
                     if time == t_netw[0]: ax[cnt_t, cnt_g].set_title(names[g], fontweight="bold", fontsize=30)
                     ax[cnt_t, cnt_g].hist(data_tmp_reference, density=True, bins=np.linspace(0, n_max, n_bins),
-                                        color=color_qualityfit[int(nb_genes * cnt_t + g)], histtype='bar', alpha=0.7)
+                                        color=color_qualityfit[cnt_t][g], histtype='bar', alpha=0.7)
                     ax[cnt_t, cnt_g].hist(data_tmp_simulated, density=True, bins=np.linspace(0, n_max, n_bins),
                                                   ec='black', histtype=u'step', alpha=1, linewidth=4)
                     ax[cnt_t, cnt_g].legend(labels=['Model (t = {}h)'.format(int(t_real[cnt_t])),
