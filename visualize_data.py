@@ -87,24 +87,24 @@ def multigene_kanto_1d(
         The (reduced) series of 1D Kantorovich distances.
     """
     assert u.ndim == 2 and v.ndim == 2, "expects 2D arrays"
-    assert u.shape[1] == v.shape[1], "nb of distributions should be the same"
+    assert u.shape[0] == v.shape[0], "nb of distributions should be the same"
 
     if normalization_max is not None:
         u *= normalization_max / u.max(axis=0)
         v *= normalization_max / v.max(axis=0)
 
-    nb_genes = u.shape[1]
-    return reduce(np.array([kanto_1d(u[:, i], v[:, i], p=p) for i in range(nb_genes)]))
+    nb_genes = u.shape[0]
+    return np.array([kanto_1d(u[i, :], v[i, :], p=p) for i in range(nb_genes)])
 
 
 def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_valid):
     nb_genes = np.size(data_simulated, 0)
     nb_time = len(t_reference)
     df = np.zeros((nb_time, nb_genes))
-    for g in range(0, nb_genes):
-        for t in range(0, nb_time):
-            df[t, g] = kanto_1d(data_reference[g, data_reference[0, :] == t_reference[t]],
-                                                     data_simulated[g, data_simulated[0, :] == t_simulated[t]])
+    # for g in range(0, nb_genes):
+    for t in range(0, nb_time):
+        df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
+                                                     data_simulated[:, data_simulated[0, :] == t_simulated[t]])
     max_dist = np.max(df[1:, 1:])
     print(max_dist)
     max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
