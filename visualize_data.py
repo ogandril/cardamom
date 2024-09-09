@@ -9,8 +9,11 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from scipy.stats import ks_2samp as ks
 from umap import UMAP
+import numpy.typing as npt
+from typing import Callable, TypeVar
 import sys, getopt
 
+_R = TypeVar("_R")
 
 plot_distributions = 1 # for plotting the marginal distributions of the simulated genes
 plot_umap = 1 # for plotting the UMAP reduction of the simulated dataset
@@ -27,8 +30,103 @@ def configure(ax):
     ax.tick_params(axis='y', left=False, labelleft=False)
     ax.spines[['top', 'right']].set_visible(False)
 
+def kanto_1d(
+    u: npt.NDArray[np.float32], v: npt.NDArray[np.float32], p: int = 1
+) -> float:
+    """Computes the Kantorovich distance between two 1D distributions.
 
-def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, file):
+    Args:
+        u: first 1D distribution
+        v: second 1D distribution
+        p (optional): the p-norm to apply. Defaults to 1.
+
+    Returns:
+        The Kantorovich distance in 1D between u and v.
+    """
+    assert u.ndim == 1 and v.ndim == 1
+    all_values = np.concatenate((u, v))
+    all_values.sort(kind="mergesort")
+
+    # Compute the differences between pairs of successive values of u and v.
+    deltas = np.diff(all_values)
+
+    # Get the respective positions of the values of u and v among the values of both distributions.
+    cdf_indices_u = np.sort(u).searchsorted(all_values[:-1], "right")
+    cdf_indices_v = np.sort(v).searchsorted(all_values[:-1], "right")
+
+    # Calculate the CDFs of u and v using their weights, if specified.
+    cdf_u = cdf_indices_u / u.size
+    cdf_v = cdf_indices_v / v.size
+
+    return float(np.power(np.sum(np.multiply(np.abs(cdf_u - cdf_v), deltas)), p))
+
+
+def NoReduce(arr: npt.NDArray[np.float32]) -> npt.NDArray[np.float32]:
+    return arr
+
+def multigene_kanto_1d(
+    u: npt.NDArray[np.float32],
+    v: npt.NDArray[np.float32],
+    reduce: Callable[[npt.NDArray[np.float32]], _R] = np.sum,
+    p: int = 1,
+    normalization_max= 10,
+) -> _R:
+    """Computes 1D Kantorovich distances over each column of 2D distributions.
+
+    Args:
+        u: 2D array where the first dimension is samples per distribution (e.g. cells)
+            and the second dimension is distributions (e.g. genes)
+        v: 2D array where the first dimension is samples per distribution (e.g. cells)
+            and the second dimension is distributions (e.g. genes)
+        reduce (optional): function to use to reduce the per-gene distances. Defaults to sum.
+        p (optional): the p-norm to apply. Defaults to 1.
+        normalization_max (optional): if set to a floating point value, sample values for each dimension will be
+            rescaled to fit in the range [0, normalization_max]
+
+    Returns:
+        The (reduced) series of 1D Kantorovich distances.
+    """
+    assert u.ndim == 2 and v.ndim == 2, "expects 2D arrays"
+    assert u.shape[1] == v.shape[1], "nb of distributions should be the same"
+
+    if normalization_max is not None:
+        u *= normalization_max / u.max(axis=0)
+        v *= normalization_max / v.max(axis=0)
+
+    nb_genes = u.shape[1]
+    return reduce(np.array([kanto_1d(u[:, i], v[:, i], p=p) for i in range(nb_genes)]))
+
+
+def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_valid):
+    nb_genes = np.size(data_simulated, 0)
+    nb_time = len(t_reference)
+    df = np.zeros((nb_time, nb_genes))
+    for g in range(0, nb_genes):
+        for t in range(0, nb_time):
+            df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
+                                                 data_simulated[:, data_simulated[0, :] == t_simulated[t]])
+
+    max_dist = df.max(axis=None)
+    print(max_dist)
+    max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
+    good_fit_dist = max_valid_distance / max_dist  # borne couleur à KD = max_valid_distance
+    bad_fit_dist = (max_valid_distance + (max_dist - max_valid_distance) / 2) / max_dist
+    # borne couleur à la moitié de l'intervalle [max_valid_distance, max KD]
+
+    print(good_fit_dist, bad_fit_dist)
+
+    color_qc = ['red' for _ in range(0, int(nb_time * nb_genes))]
+    for g in range(0, nb_genes):
+        for t in range(0, nb_time):
+            cnt = int(t * nb_genes + g)
+            if df[t, g] < good_fit_dist: color_qc[cnt] = 'lightgreen'
+            elif df[t, g] < bad_fit_dist: color_qc[cnt] = 'sandybrown'
+
+            print(df[t, g], color_qc[cnt])
+
+    return color_qc
+
+def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, file, percent_valid):
 
     if len(t_real) != len(t_netw):
         print('Times are not the same !')
@@ -38,7 +136,10 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
     nb_genes = len(names)-1
     list_genes = np.arange(nb_genes)+1
     nb_pages = int(nb_genes / nb_by_pages) + 1
-    with PdfPages('./{}/Results/Marginals_{}.pdf'.format(file, file)) as pdf:
+
+    color_qualityfit = build_qc(data_reference, data_simulated, t_real, t_netw, percent_valid)
+
+    with PdfPages('./{}/Results/Marginals.pdf'.format(file)) as pdf:
         for i in range(nb_pages):
             fig, ax = plt.subplots(len(t_netw), min(nb_by_pages, nb_genes),
                                    figsize=(min(nb_by_pages, nb_genes) * rat, len(t_netw) * rat))
@@ -55,9 +156,9 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
                     if time == t_netw[-1]: ax[-1, cnt_g].set_xlabel('mRNA (copies per cell)', fontsize=20)
                     if time == t_netw[0]: ax[cnt_t, cnt_g].set_title(names[g], fontweight="bold", fontsize=30)
                     ax[cnt_t, cnt_g].hist(data_tmp_reference, density=True, bins=np.linspace(0, n_max, n_bins),
-                                        color='grey', histtype='bar', alpha=0.7)
+                                        color=color_qualityfit[int(nb_genes * cnt_t + g)], histtype='bar', alpha=0.7)
                     ax[cnt_t, cnt_g].hist(data_tmp_simulated, density=True, bins=np.linspace(0, n_max, n_bins),
-                                                  ec='red', histtype=u'step', alpha=1, linewidth=2)
+                                                  ec='black', histtype=u'step', alpha=1, linewidth=4)
                     ax[cnt_t, cnt_g].legend(labels=['Model (t = {}h)'.format(int(t_real[cnt_t])),
                                                   'Data (t = {}h)'.format(int(t_real[cnt_t]))])
             pdf.savefig(fig)
@@ -114,7 +215,7 @@ def plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile):
     ax3.axis('off')
 
     # Export the figure
-    fig.savefig('./{}/Results/UMAP_{}.pdf'.format(inputfile, inputfile), dpi=300, bbox_inches='tight', pad_inches=0.02)
+    fig.savefig('./{}/Results/UMAP.pdf'.format(inputfile), dpi=300, bbox_inches='tight', pad_inches=0.02)
 
 def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
     T = len(t_real)
@@ -180,7 +281,7 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
     axA.tick_params(axis='y',direction='out', pad=-0.1)
 
     # Export the figure
-    fig.savefig('./{}/Results/Comparison_{}.pdf'.format(file, file), dpi=300, bbox_inches='tight', pad_inches=0.02)
+    fig.savefig('./{}/Results/Comparison.pdf'.format(file), dpi=300, bbox_inches='tight', pad_inches=0.02)
 
 def main(argv):
     inputfile = ''
@@ -191,6 +292,8 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-i", "--ifile"):
             inputfile = arg
+
+    percent_valid = .5
 
     ### PLOT DISTRIBUTION
 
@@ -224,7 +327,7 @@ def main(argv):
     data_netw = data_netw[order,:]
 
     if plot_distributions:
-        plot_data_distrib(data_real, data_netw, t_real, t_netw, names, inputfile)
+        plot_data_distrib(data_real, data_netw, t_real, t_netw, names, inputfile, percent_valid)
 
     if plot_comparison:
         compare_marginals(data_real, data_netw, t_real, t_netw, names, inputfile)
