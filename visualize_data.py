@@ -106,7 +106,6 @@ def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_v
         df[t, :] = multigene_kanto_1d(data_reference[:, data_reference[0, :] == t_reference[t]],
                                                      data_simulated[:, data_simulated[0, :] == t_simulated[t]])
     max_dist = np.max(df[1:, 1:])
-    print(max_dist)
     max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
     good_fit_dist = max_valid_distance / max_dist  # borne couleur à KD = max_valid_distance
     bad_fit_dist = (max_valid_distance + (max_dist - max_valid_distance) / 2) / max_dist
@@ -118,7 +117,7 @@ def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_v
             if df[t, g] < good_fit_dist*max_dist: color_qc[t][g] = 'lightgreen'
             elif df[t, g] < bad_fit_dist*max_dist: color_qc[t][g] = 'sandybrown'
 
-    return color_qc
+    return df, color_qc
 
 def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, file, percent_valid):
 
@@ -131,7 +130,7 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
     list_genes = np.arange(nb_genes)+1
     nb_pages = int(nb_genes / nb_by_pages) + 1
 
-    color_qualityfit = build_qc(data_reference, data_simulated, t_real, t_netw, percent_valid)
+    df, color_qualityfit = build_qc(data_reference, data_simulated, t_real, t_netw, percent_valid)
 
     with PdfPages('./{}/Results/Marginals.pdf'.format(file)) as pdf:
         for i in range(nb_pages):
@@ -149,6 +148,7 @@ def plot_data_distrib(data_reference, data_simulated, t_real, t_netw, names, fil
                     data_tmp_reference = data_reference[g, data_reference[0, :] == t_real[cnt_t]]
                     if time == t_netw[-1]: ax[-1, cnt_g].set_xlabel('mRNA (copies per cell)', fontsize=20)
                     if time == t_netw[0]: ax[cnt_t, cnt_g].set_title(names[g], fontweight="bold", fontsize=30)
+                    else: ax[cnt_t, cnt_g].set_title('Kanto. dist. = {}'.format(int(100*df[cnt_t, g])/100), fontsize=20)
                     ax[cnt_t, cnt_g].hist(data_tmp_reference, density=True, bins=np.linspace(0, n_max, n_bins),
                                         color=color_qualityfit[cnt_t][g], histtype='bar', alpha=0.7)
                     ax[cnt_t, cnt_g].hist(data_tmp_simulated, density=True, bins=np.linspace(0, n_max, n_bins),
@@ -279,6 +279,7 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
 
 def main(argv):
     inputfile = ''
+    percent_valid = float(argv[2])
     try:
         opts, args = getopt.getopt(argv, "hi:", ["ifile="])
     except getopt.GetoptError:
@@ -286,8 +287,6 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-i", "--ifile"):
             inputfile = arg
-
-    percent_valid = .5
 
     ### PLOT DISTRIBUTION
 
