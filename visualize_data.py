@@ -89,12 +89,16 @@ def multigene_kanto_1d(
     assert u.ndim == 2 and v.ndim == 2, "expects 2D arrays"
     assert u.shape[0] == v.shape[0], "nb of distributions should be the same"
 
-    if normalization_max is not None:
-        u *= normalization_max / u.max(axis=0)
-        v *= normalization_max / v.max(axis=0)
-
     nb_genes = u.shape[0]
-    return np.array([kanto_1d(u[i, :], v[i, :], p=p) for i in range(nb_genes)])
+    res = np.zeros(nb_genes)
+    if normalization_max is not None:
+        for i in range(nb_genes):
+            if u[i, :].max() != 0:
+                u[i, :] *= normalization_max / u[i, :].max()
+            if v[i, :].max() != 0:
+                v[i, :] *= normalization_max / v[i, :].max()
+            res[i] = kanto_1d(u[i, :], v[i, :], p=p)
+    return res
 
 
 def build_qc(data_reference, data_simulated, t_reference, t_simulated, percent_valid):
