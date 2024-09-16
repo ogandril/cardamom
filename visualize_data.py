@@ -286,14 +286,14 @@ def mean_distances(data_real, data_netw):
 
     distances_1D = []
 
-        for tp in real_data.timepoints:
-            distances_1D.append(
-                multigene_kanto_1d(
-                    data_real[tp].values.copy(),
-                    data_netw[tp].values.copy(),
-                    reduce=NoReduce,
-                )
+    for tp in real_data.timepoints:
+        distances_1D.append(
+            multigene_kanto_1d(
+                data_real[tp].values.copy(),
+                data_netw[tp].values.copy(),
+                reduce=NoReduce,
             )
+        )
 
 
         fig = px.bar(
