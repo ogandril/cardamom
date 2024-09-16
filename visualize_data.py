@@ -286,7 +286,7 @@ def mean_distances(data_real, data_netw):
 
     distances_1D = []
 
-    for tp in real_data.timepoints:
+    for tp in data_real.timepoints:
         distances_1D.append(
             multigene_kanto_1d(
                 data_real[tp].values.copy(),
