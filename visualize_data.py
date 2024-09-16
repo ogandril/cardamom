@@ -15,10 +15,9 @@ import sys, getopt
 
 _R = TypeVar("_R")
 
-plot_distributions = 0 # for plotting the marginal distributions of the simulated genes
-plot_umap = 0 # for plotting the UMAP reduction of the simulated dataset
-plot_comparison = 0 # for plotting the comparison of the marginals using a Kolmogorov-Smornov test
-mean_distances = 1 # for plotting the mean value of KantoD at each time step
+plot_distributions = 1 # for plotting the marginal distributions of the simulated genes
+plot_umap = 1 # for plotting the UMAP reduction of the simulated dataset
+plot_comparison = 1 # for plotting the comparison of the marginals using a Kolmogorov-Smornov test
 verb = 1
 
 
@@ -281,30 +280,6 @@ def compare_marginals(data_real, data_netw, t_real, t_netw, genes, file):
 
     # Export the figure
     fig.savefig('./{}/Results/Comparison.pdf'.format(file), dpi=300, bbox_inches='tight', pad_inches=0.02)
-
-def mean_distances(data_real, data_netw):   
-
-    distances_1D = []
-
-    for tp in data_real.timepoints:
-        distances_1D.append(
-            multigene_kanto_1d(
-                data_real[tp].values.copy(),
-                data_netw[tp].values.copy(),
-                reduce=NoReduce,
-            )
-        )
-
-
-        fig = px.bar(
-            pd.DataFrame(
-                np.sum(distances_1D, axis=1),
-                index=data_real.timepoints.astype(str),
-                columns=["distance 1D"],
-            )
-        )
-
-        fig.write_image("'./{}/Results/Sum_distances_1d.png", width=600, height=400)
 
 
 def main(argv):
