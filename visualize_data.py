@@ -330,17 +330,12 @@ def main(argv):
     if plot_comparison:
         compare_marginals(data_real, data_netw, t_real, t_netw, names, inputfile)
 
-    if mean_distances:
-        mean_distances(data_real, data_netw)    
-
     if plot_umap:
         # Remove Sparc gene (index = 35)
         if p == "Semrau":
             data_real = np.delete(data_real, 35, axis=1)
             data_netw = np.delete(data_netw, 35, axis=1)
         plot_data_umap(data_real, data_netw, t_real, t_netw, inputfile)
-
-
 
 if __name__ == "__main__":
    main(sys.argv[1:])
