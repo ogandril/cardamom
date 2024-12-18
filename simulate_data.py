@@ -6,7 +6,6 @@ from alive_progress import alive_bar
 from sys import argv 
 
 
-
 def build_data(data_real, data_bool, time, my_k, model, basal, inter, transfert, rval):
 
     C, G = data_real.shape
@@ -15,19 +14,9 @@ def build_data(data_real, data_bool, time, my_k, model, basal, inter, transfert,
     my_data[1:, 0] = time  # Time points
     my_data[1:, 1] = 1 * (time > 0)  # Stimulus
 
-    # Build the interaction matrix. For technical reasons, we transfer the basal regulation in the diagonal of the matrix
-    if transfert==1:  #transfer the basal regulation in the diagonal of the interaction matrix, or not.
-        #r = 2.5 # transfer intensity
-        r = rval
-        model.inter[:, :] = inter[:, :] + (1 - r/G) * np.diag(basal)
-        model.inter[1:, 1:] /= (1 - .6 * r/G)
-        model.inter -= np.diag(np.diag(model.inter)) * .6 * r/G
-        model.basal[:] = r/G * basal
-
-    else:
-        model.inter[:, :] = inter[:, :]
-        model.inter -= np.diag(np.diag(model.inter))
-        model.basal[:] = basal[:]
+    # Build the interaction matrix. 
+    model.inter[:, :] = inter[:, :]
+    model.basal[:] = basal[:]
 
     C_0 = int(np.sum(data_real[:, 0] == 0))
     c = np.arange(C_0)
@@ -88,6 +77,7 @@ def main(argv):
     model = NetworkModel(G)
     model.a = np.zeros((3, G+1))
     model.a[0, :] = np.load(p + 'cardamom/kmin.npy')
+    model.a[0, 47] = 0
     model.a[1, :] = np.load(p + 'cardamom/kmax.npy')
     model.a[2, :] = np.load(p + 'cardamom/bet.npy')
     data_bool = np.load(p + 'cardamom/data_bool.npy')
