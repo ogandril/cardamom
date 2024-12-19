@@ -77,7 +77,6 @@ def main(argv):
     model = NetworkModel(G)
     model.a = np.zeros((3, G+1))
     model.a[0, :] = np.load(p + 'cardamom/kmin.npy')
-    model.a[0, 47] = 0
     model.a[1, :] = np.load(p + 'cardamom/kmax.npy')
     model.a[2, :] = np.load(p + 'cardamom/bet.npy')
     data_bool = np.load(p + 'cardamom/data_bool.npy')

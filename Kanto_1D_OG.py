@@ -115,6 +115,8 @@ def main():
     # Plot and save the result
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
    
+    np.save('distances_1D.csv', distances_1D)
+
     # Plot summed distances -------------------------------------------------------
     fig = px.bar(
         pd.DataFrame(
@@ -132,7 +134,8 @@ def main():
     # sort columns (gene names) alphabetically
     df = df.reindex(sorted(df.columns), axis=1)
 
-    max_dist = df.max(axis=None)
+    #max_dist = df.max(axis=None)
+    max_dist = 4
     max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
 
     good_fit_dist = max_valid_distance / max_dist  # borne couleur à KD = max_valid_distance
