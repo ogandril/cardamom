@@ -84,6 +84,8 @@ def main():
     P=argv[2]
     cwd=argv[3]
     percent_valid=float(argv[4])
+    m=float(argv[5])
+
 
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Data")
 
@@ -130,14 +132,15 @@ def main():
 
     # # Plot distances per gene -----------------------------------------------------
     df = pd.DataFrame(distances_1D, columns=gene_names[1:])
-
     # sort columns (gene names) alphabetically
     df = df.reindex(sorted(df.columns), axis=1)
+    max_dist = df.max(axis=None)
+    print(max_dist)
 
-    #max_dist = df.max(axis=None)
-    max_dist = 4
+    if m !=0 :
+        df.iloc[[0],[0]]=m
+
     max_valid_distance = percent_valid*max_dist # percentage of values to be considered as correct
-
     good_fit_dist = max_valid_distance / max_dist  # borne couleur à KD = max_valid_distance
     bad_fit_dist = (max_valid_distance + (max_dist - max_valid_distance) / 2) / max_dist  
     # borne couleur à la moitié de l'intervalle [max_valid_distance, max KD]
@@ -150,9 +153,11 @@ def main():
         (1.0, "red"),
     ]
 
+
     fig = px.imshow(df, color_continuous_scale=cmap)
 
-    fig.write_image("Gene_distances_1d.png", width=len(gene_names)*16, height=400)
+    fig.write_image("Gene_distances_1d.WT.png", width=len(gene_names)*16, height=400)
+
 
 if __name__ == "__main__":
     main()
