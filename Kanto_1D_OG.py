@@ -76,10 +76,10 @@ def multigene_kanto_1d(
 
     nb_genes = u.shape[1]
     return reduce(np.array([kanto_1d(u[:, i], v[:, i], p=p) for i in range(nb_genes)]))
-
+    """
     assert u.ndim == 2 and v.ndim == 2, "expects 2D arrays"
     assert u.shape[0] == v.shape[0], "nb of distributions should be the same"
-    """
+
     nb_genes = u.shape[0]
     res = np.zeros(nb_genes)
     if normalization_max is not None:
