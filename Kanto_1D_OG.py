@@ -66,7 +66,8 @@ def multigene_kanto_1d(
 
     Returns:
         The (reduced) series of 1D Kantorovich distances.
-        
+    """
+    """
     assert u.ndim == 2 and v.ndim == 2, "expects 2D arrays"
     assert u.shape[1] == v.shape[1], "nb of distributions should be the same"
 
@@ -79,7 +80,6 @@ def multigene_kanto_1d(
     """
     assert u.ndim == 2 and v.ndim == 2, "expects 2D arrays"
     assert u.shape[0] == v.shape[0], "nb of distributions should be the same"
-
     nb_genes = u.shape[0]
     res = np.zeros(nb_genes)
     if normalization_max is not None:
