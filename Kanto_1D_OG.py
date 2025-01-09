@@ -116,8 +116,7 @@ def main():
 
     # Plot and save the result
     os.chdir(str(cwd)+"/OG"+str(D)+"/"+str(P)+"/Results")
-   
-    np.save('distances_1D.csv', distances_1D)
+    np.savetxt("distances_1D.csv", distances_1D, delimiter=",")
 
     # Plot summed distances -------------------------------------------------------
     fig = px.bar(
@@ -156,7 +155,7 @@ def main():
 
     fig = px.imshow(df, color_continuous_scale=cmap)
 
-    fig.write_image("Gene_distances_1d.WT.png", width=len(gene_names)*16, height=400)
+    fig.write_image("Gene_distances_1d.png", width=len(gene_names)*16, height=400)
 
 
 if __name__ == "__main__":
